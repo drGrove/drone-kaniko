@@ -41,7 +41,7 @@ if [[ -n "${PLUGIN_TARGET:-}" ]]; then
 fi
 
 if [[ "${PLUGIN_SKIP_TLS_VERIFY:-}" == "true" ]]; then
-    EXTRA_OPTS="--skip-tls-verify=true"
+  EXTRA_OPTS="${EXTRA_OPTS} --skip-tls-verify=true"
 fi
 
 if [[ "${PLUGIN_CACHE:-}" == "true" ]]; then
@@ -63,6 +63,15 @@ fi
 if [ -n "${PLUGIN_BUILD_ARGS_FROM_ENV:-}" ]; then
     BUILD_ARGS_FROM_ENV=$(echo "${PLUGIN_BUILD_ARGS_FROM_ENV}" | tr ',' '\n' | while read build_arg; do echo "--build-arg ${build_arg}=$(eval "echo \$$build_arg")"; done)
 fi
+
+if [ -n "${PLUGIN_REPRODUCIBLE:-}" ]; then
+  EXTRA_OPTS="${EXTRA_OPTS} --reproducible"
+fi
+
+if [ -n "${PLUGIN_SINGLE_SNAPSHOT:-}" ]; then
+  EXTRA_OPTS="${EXTRA_OPTS} --single-snapshot"
+fi
+
 
 # auto_tag, if set auto_tag: true, auto generate .tags file
 # support format Major.Minor.Release or start with `v`
