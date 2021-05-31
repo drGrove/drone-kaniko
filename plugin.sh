@@ -4,7 +4,7 @@ set -euo pipefail
 
 export PATH=$PATH:/kaniko/
 
-REGISTRY=${PLUGIN_REGISTRY:-index.docker.io}
+REGISTRY=${PLUGIN_REGISTRY:-https://index.docker.io/v1/}
 
 if [ "${PLUGIN_USERNAME:-}" ] || [ "${PLUGIN_PASSWORD:-}" ]; then
     DOCKER_AUTH=`echo -n "${PLUGIN_USERNAME}:${PLUGIN_PASSWORD}" | base64 | tr -d "\n"`
@@ -18,6 +18,12 @@ if [ "${PLUGIN_USERNAME:-}" ] || [ "${PLUGIN_PASSWORD:-}" ]; then
     }
 }
 DOCKERJSON
+fi
+
+# If we're using dockerhub we have to convert from URL with protocol to
+# standard format for use throughout the rest of the system
+if [ "${REGISTRY}" == "https://index.docker.io/v1/" ]; then
+  REGISTRY="docker.io"
 fi
 
 if [ "${PLUGIN_JSON_KEY:-}" ];then
